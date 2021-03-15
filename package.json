@@ -1,7 +1,7 @@
 {
   "name": "@amsterdam/use-promise",
   "version": "1.0.0",
-  "description": "Make using Promises in your components a breeze 🌬️",
+  "description": "Making Promises in your components a breeze 🌬️",
   "main": "lib/index.js",
   "module": "es/index.js",
   "sideEffects": false,

@@ -1,6 +1,6 @@
 # usePromise
 
-Make using Promises in your components a breeze 🌬️
+Making Promises in your components a breeze 🌬️
 
 ## Installation
 
