@@ -1,0 +1,5 @@
+{
+  "extends": "./tsconfig.json",
+  // Reset exclusions in order to include files with .test extension.
+  "exclude": []
+}
