@@ -34,7 +34,7 @@ const UserDetails = ({ userId }: UserDetailsProps) => {
 export default UserDetails
 ```
 
-The hypothetical `fetchUser` function imported in this file fetches a user by its id and returns a Promise with that users details. Let's add some code to manage the result of this function.
+The hypothetical `fetchUser` function imported in this file fetches a user by its id and returns a Promise with that user's details. Let's add some code to manage the result of this function.
 
 ```tsx
 import usePromise, { PromiseStatus } from '@amsterdam/use-promise'
