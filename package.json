@@ -5,8 +5,15 @@
   "main": "lib/index.js",
   "module": "es/index.js",
   "sideEffects": false,
+  "files": [
+    "es",
+    "lib"
+  ],
   "engines": {
     "node": "^14"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "build": "yarn build:lib && yarn build:es",
