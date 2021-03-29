@@ -6,11 +6,11 @@ Handling side-effects from `usePromise` can be done by passing the result to `us
 const result = usePromise(() => fetchUser(userId), [userId])
 
 useEffect(() => {
-  const originalTitle = document.title
-
   if (!isFulfilled(result)) {
     return
   }
+
+  const originalTitle = document.title
 
   document.title = `User Details | ${result.value.name}`
 
