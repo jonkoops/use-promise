@@ -1,75 +1,89 @@
-import { DependencyList, useEffect, useMemo, useState } from 'react'
+import { DependencyList, useEffect, useState } from 'react'
 
-export enum PromiseStatus {
-  Pending = 'pending',
-  Fulfilled = 'fulfilled',
-  Rejected = 'rejected',
-}
-
-export type PromiseResult<T> =
-  | PromisePendingResult
-  | PromiseFulfilledResult<T>
-  | PromiseRejectedResult
+export type PromiseResult<T> = PromisePendingResult | PromiseSettledResult<T>
 
 export interface PromisePendingResult {
-  status: PromiseStatus.Pending
+  status: 'pending'
 }
-
-export interface PromiseFulfilledResult<T> {
-  status: PromiseStatus.Fulfilled
-  value: T
-}
-
-export interface PromiseRejectedResult {
-  status: PromiseStatus.Rejected
-  error: any
-}
-
-export type PromiseFactoryFn<T> = () => Promise<T>
 
 /**
- * Takes a function that creates a promise and returns its resolved or rejected value together with the status of the promise.
- * When passing in a promise make sure that the dependencies are passed as well:
+ * Function that creates a promise, takes a signal to abort fetch requests.
+ */
+export type PromiseFactoryFn<T> = (signal: AbortSignal) => Promise<T>
+
+/**
+ * Determines if the result of a promise is pending.
+ * @param result Result to check.
+ */
+export const isPending = <T>(
+  result: PromiseResult<T>,
+): result is PromisePendingResult => result.status === 'pending'
+
+/**
+ * Determines if the result of a promise is fulfilled.
+ * @param result Result to check.
+ */
+export const isFulfilled = <T>(
+  result: PromiseResult<T>,
+): result is PromiseFulfilledResult<T> => result.status === 'fulfilled'
+
+/**
+ * Determines if the result of a promise is rejected.
+ * @param result Result to check.
+ */
+export const isRejected = <T>(
+  result: PromiseResult<T>,
+): result is PromiseRejectedResult => result.status === 'rejected'
+
+/**
+ * Takes a function that creates a Promise and returns its pending, fulfilled, or rejected result.
  *
  * ```ts
- * const result = usePromise(() => fetchUser(userId), [userId])
+ * const result = usePromise(() => fetch('/api/products'))
  * ```
  *
- * @param factory The function that creates the promise that will be used.
- * @param deps The dependencies of the factory function.
+ * Also takes a list of dependencies, when the dependencies change the promise is recreated.
+ *
+ * ```ts
+ * const result = usePromise(() => fetch(`/api/products/${id}`), [id])
+ * ```
+ *
+ * Can abort a fetch request, a [signal](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) is provided from the factory function to do so.
+ *
+ * ```ts
+ * const result = usePromise(signal => fetch(`/api/products/${id}`, { signal }), [id])
+ * ```
+ *
+ * @param factory Function that creates the promise.
+ * @param deps If present, promise will be recreated if the values in the list change.
  */
-export default function usePromise<T = any>(
+export default function usePromise<T>(
   factory: PromiseFactoryFn<T>,
-  deps?: DependencyList,
+  deps: DependencyList = [],
 ): PromiseResult<T> {
-  const promise = useMemo(factory, deps)
-  const [result, setResult] = useState<PromiseResult<T>>({
-    status: PromiseStatus.Pending,
-  })
+  const [result, setResult] = useState<PromiseResult<T>>({ status: 'pending' })
 
   useEffect(() => {
-    if (result.status !== PromiseStatus.Pending) {
-      setResult({ status: PromiseStatus.Pending })
+    if (!isPending(result)) {
+      setResult({ status: 'pending' })
     }
 
-    let ignoreResult = false
+    const controller = new AbortController()
+    const { signal } = controller
 
-    promise
-      .then(
-        (value) =>
-          !ignoreResult &&
-          setResult({ status: PromiseStatus.Fulfilled, value }),
-      )
-      .catch(
-        (error) =>
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-          !ignoreResult && setResult({ status: PromiseStatus.Rejected, error }),
-      )
+    async function handlePromise() {
+      const [promiseResult] = await Promise.allSettled([factory(signal)])
 
-    return () => {
-      ignoreResult = true
+      if (!signal.aborted) {
+        setResult(promiseResult)
+      }
     }
-  }, [promise])
+
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    handlePromise()
+
+    return () => controller.abort()
+  }, deps)
 
   return result
 }

@@ -1,117 +1,58 @@
-import { renderHook } from '@testing-library/react-hooks'
-import usePromise, { PromiseStatus } from './usePromise'
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+import { act, renderHook } from '@testing-library/react-hooks'
+import usePromise, { isFulfilled, isPending, isRejected } from './usePromise'
 
-function createPromiseWithCallbacks() {
-  let resolve: (value: unknown) => void
-  let reject: (error: unknown) => void
+// This promise never resolves or rejects, making it useful for testing the pending state.
+const UNSETTLED_PROMISE = new Promise(() => {})
 
-  const promise = new Promise((res, rej) => {
-    resolve = res
-    reject = rej
+describe('isPending', () => {
+  it('checks if a result is pending', () => {
+    expect(isPending({ status: 'pending' })).toBe(true)
   })
+})
 
-  return {
-    promise,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    resolve,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    reject,
-  }
-}
+describe('isFulfilled', () => {
+  it('checks if a result is fulfilled', () => {
+    expect(isFulfilled({ status: 'fulfilled', value: null })).toBe(true)
+  })
+})
+
+describe('isRejected', () => {
+  it('checks if a result is rejected', () => {
+    expect(isRejected({ status: 'rejected', reason: null })).toBe(true)
+  })
+})
 
 describe('usePromise', () => {
-  it('returns the pending status while the promise is in-flight', () => {
-    const promise = new Promise(() => {})
-    const { result } = renderHook(() => usePromise(() => promise))
+  it('returns a pending result', () => {
+    const { result } = renderHook(() => usePromise(() => UNSETTLED_PROMISE))
 
-    expect(result.current).toEqual({
-      status: PromiseStatus.Pending,
-    })
+    expect(result.current).toEqual({ status: 'pending' })
   })
 
-  it('returns the value when the promise is resolved', async () => {
+  it('returns a fulfilled result', async () => {
     const value = 'foo'
-    const promise = Promise.resolve(value)
-    const { result, waitForNextUpdate } = renderHook(() =>
-      usePromise(() => promise),
+    const { result, waitForValueToChange } = renderHook(() =>
+      usePromise(() => Promise.resolve(value)),
     )
 
-    await waitForNextUpdate()
+    await waitForValueToChange(() => result.current)
 
-    expect(result.current).toEqual({
-      status: PromiseStatus.Fulfilled,
-      value,
-    })
+    expect(result.current).toEqual({ status: 'fulfilled', value })
   })
 
-  it('returns the error when the promise is rejected', async () => {
-    const error = new Error('Whoopsie')
-    const promise = Promise.reject(error)
-    const { result, waitForNextUpdate } = renderHook(() =>
-      usePromise(() => promise),
+  it('returns a rejected result', async () => {
+    const reason = new Error('Whoopsie')
+    const { result, waitForValueToChange } = renderHook(() =>
+      usePromise(() => Promise.reject(reason)),
     )
 
-    await waitForNextUpdate()
+    await waitForValueToChange(() => result.current)
 
-    expect(result.current).toEqual({
-      status: PromiseStatus.Rejected,
-      error,
-    })
+    expect(result.current).toEqual({ status: 'rejected', reason })
   })
 
-  it('ignores resolved values of preceding promises', async () => {
-    const first = createPromiseWithCallbacks()
-    const last = createPromiseWithCallbacks()
-    let currentPromise = first.promise
-
-    const { result, rerender, waitForNextUpdate } = renderHook(() =>
-      usePromise(() => currentPromise),
-    )
-
-    currentPromise = last.promise
-
-    rerender()
-
-    last.resolve('last')
-    first.resolve('first')
-
-    await waitForNextUpdate()
-
-    expect(result.current).toEqual({
-      status: PromiseStatus.Fulfilled,
-      value: 'last',
-    })
-  })
-
-  it('ignores rejected values of preceding promises', async () => {
-    const first = createPromiseWithCallbacks()
-    const last = createPromiseWithCallbacks()
-    let currentPromise = first.promise
-
-    const { result, rerender, waitForNextUpdate } = renderHook(() =>
-      usePromise(() => currentPromise),
-    )
-
-    currentPromise = last.promise
-
-    rerender()
-
-    const lastError = new Error('last')
-
-    last.reject(lastError)
-    first.reject(new Error('first'))
-
-    await waitForNextUpdate()
-
-    expect(result.current).toEqual({
-      status: PromiseStatus.Rejected,
-      error: lastError,
-    })
-  })
-
-  it('memoizes the promise based on the dependencies', async () => {
+  it('updates the result when dependencies change', async () => {
     let currentCount = 0
     let retryCount = 0
 
@@ -120,25 +61,67 @@ describe('usePromise', () => {
       return Promise.resolve(currentCount++)
     }
 
-    const { result, rerender, waitForNextUpdate } = renderHook(() =>
+    const { result, rerender, waitForValueToChange } = renderHook(() =>
       usePromise(() => nextNumber(), [retryCount]),
     )
 
-    rerender()
-    await waitForNextUpdate()
-
-    expect(result.current).toEqual({
-      status: PromiseStatus.Fulfilled,
-      value: 0,
-    })
+    await waitForValueToChange(() => result.current)
 
     retryCount = 1
     rerender()
-    await waitForNextUpdate()
 
-    expect(result.current).toEqual({
-      status: PromiseStatus.Fulfilled,
-      value: 1,
-    })
+    expect(result.current).toEqual({ status: 'pending' })
+
+    await waitForValueToChange(() => result.current)
+
+    expect(result.current).toEqual({ status: 'fulfilled', value: 1 })
+  })
+
+  it('aborts when unmounted before the promise was settled', () => {
+    let currentSignal: AbortSignal
+    const { unmount } = renderHook(() =>
+      usePromise((signal) => {
+        currentSignal = signal
+        return UNSETTLED_PROMISE
+      }, []),
+    )
+
+    unmount()
+
+    // @ts-ignore
+    expect(currentSignal.aborted).toBe(true)
+  })
+
+  it('aborts when dependencies change before the promise was settled', () => {
+    let isCancelled = false
+    let currentSignal: AbortSignal
+    const { rerender } = renderHook(() =>
+      usePromise(
+        (signal) => {
+          if (!isCancelled) {
+            currentSignal = signal
+          }
+
+          return UNSETTLED_PROMISE
+        },
+        [isCancelled],
+      ),
+    )
+
+    isCancelled = true
+    rerender()
+
+    // @ts-ignore
+    expect(currentSignal.aborted).toBe(true)
+  })
+
+  it('prevents setting the result when aborted before the promise was settled', async () => {
+    const promise = new Promise<void>((resolve) => setImmediate(resolve))
+    const { result, unmount } = renderHook(() => usePromise(() => promise))
+
+    unmount()
+    await act(() => promise)
+
+    expect(result.current).toEqual({ status: 'pending' })
   })
 })
