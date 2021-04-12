@@ -7,7 +7,7 @@
     "plugin:prettier/recommended",
     "plugin:jest/recommended",
     "plugin:jest/style",
-    "plugin:testing-library/recommended",
+    "plugin:testing-library/dom",
     "plugin:testing-library/react"
   ],
   "parserOptions": {
