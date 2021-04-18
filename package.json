@@ -16,7 +16,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "yarn build:lib && yarn build:es",
+    "build": "npm run build:lib && npm run build:es",
     "build:lib": "rimraf lib && tsc",
     "build:es": "rimraf es && tsc --project tsconfig.es.json",
     "lint": "eslint . --ext .ts,.tsx",
