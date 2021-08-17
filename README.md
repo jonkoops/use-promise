@@ -3,10 +3,12 @@
 Making Promises in your components a breeze 🌬️
 
 ## Features
-- Handle the result of your Promises in a structured manner
-- Familiar handling of side effects using `useEffect`
-- Easy cancellation of fetch requests with `AbortSignal`
-- TypeScript support out of the box
+- Handle the result of your Promises easily.
+- Familiar handling of side effects using `useEffect`.
+- Easy cancellation of fetch requests with `AbortSignal`.
+- TypeScript support out of the box.
+
+For more information see the [Getting Started](./guides/getting-started.md) guide.
 
 ## Installation
 
