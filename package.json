@@ -8,9 +8,8 @@
     "lib",
     "guides"
   ],
-  "exports": {
-    ".": "./lib/usePromise.js"
-  },
+  "main": "./lib/usePromise.js",
+  "exports": "./lib/usePromise.js",
   "publishConfig": {
     "access": "public"
   },
