@@ -2,22 +2,23 @@
   "name": "@amsterdam/use-promise",
   "version": "2.1.0",
   "description": "Making Promises in your components a breeze 🌬️",
-  "main": "lib/usePromise.js",
-  "module": "es/usePromise.js",
+  "type": "module",
   "sideEffects": false,
   "files": [
-    "es",
-    "lib"
+    "lib",
+    "guides"
   ],
+  "exports": {
+    ".": "./lib/usePromise.js"
+  },
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "build": "npm run build:lib && npm run build:es",
-    "build:lib": "rimraf lib && tsc",
-    "build:es": "rimraf es && tsc --project tsconfig.es.json",
+    "build": "rimraf lib && tsc",
     "lint": "eslint . --ext .ts,.tsx",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -40,6 +41,7 @@
   "devDependencies": {
     "@jest/types": "^27.0.2",
     "@testing-library/react-hooks": "^7.0.0",
+    "@types/jest": "^27.0.1",
     "@typescript-eslint/eslint-plugin": "^4.17.0",
     "eslint": "^7.22.0",
     "eslint-config-airbnb-typescript": "^12.3.1",
