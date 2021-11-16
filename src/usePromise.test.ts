@@ -116,7 +116,9 @@ describe('usePromise', () => {
   })
 
   it('prevents setting the result when aborted before the promise was settled', async () => {
-    const promise = new Promise<void>((resolve) => setTimeout(resolve))
+    const promise = new Promise<void>((resolve) => {
+      setTimeout(resolve)
+    })
     const { result, unmount } = renderHook(() => usePromise(() => promise))
 
     unmount()
