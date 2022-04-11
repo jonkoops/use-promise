@@ -39,8 +39,10 @@
   },
   "devDependencies": {
     "@jest/types": "^27.0.2",
-    "@testing-library/react-hooks": "^7.0.0",
+    "@testing-library/react-hooks": "^8.0.0",
     "@types/jest": "^27.0.1",
+    "@types/react": "^18.0.5",
+    "@types/react-dom": "^18.0.1",
     "@typescript-eslint/eslint-plugin": "^5.1.0",
     "@typescript-eslint/parser": "^5.1.0",
     "eslint": "^8.0.1",
