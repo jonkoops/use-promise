@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { act, renderHook } from '@testing-library/react-hooks'
+import { act, renderHook, waitFor } from '@testing-library/react'
 import usePromise, { isFulfilled, isPending, isRejected } from './usePromise'
 
 // This promise never resolves or rejects, making it useful for testing the pending state.
@@ -32,24 +32,24 @@ describe('usePromise', () => {
 
   it('returns a fulfilled result', async () => {
     const value = 'foo'
-    const { result, waitForValueToChange } = renderHook(() =>
+    const { result } = renderHook(() =>
       usePromise(() => Promise.resolve(value)),
     )
 
-    await waitForValueToChange(() => result.current)
-
-    expect(result.current).toEqual({ status: 'fulfilled', value })
+    await waitFor(() => {
+      expect(result.current).toEqual({ status: 'fulfilled', value })
+    })
   })
 
   it('returns a rejected result', async () => {
     const reason = new Error('Whoopsie')
-    const { result, waitForValueToChange } = renderHook(() =>
+    const { result } = renderHook(() =>
       usePromise(() => Promise.reject(reason)),
     )
 
-    await waitForValueToChange(() => result.current)
-
-    expect(result.current).toEqual({ status: 'rejected', reason })
+    await waitFor(() => {
+      expect(result.current).toEqual({ status: 'rejected', reason })
+    })
   })
 
   it('updates the result when dependencies change', async () => {
@@ -61,20 +61,20 @@ describe('usePromise', () => {
       return Promise.resolve(currentCount++)
     }
 
-    const { result, rerender, waitForValueToChange } = renderHook(() =>
+    const { result, rerender } = renderHook(() =>
       usePromise(() => nextNumber(), [retryCount]),
     )
 
-    await waitForValueToChange(() => result.current)
+    await waitFor(() => {
+      expect(result.current).toEqual({ status: 'fulfilled', value: 0 })
+    })
 
     retryCount = 1
     rerender()
 
-    expect(result.current).toEqual({ status: 'pending' })
-
-    await waitForValueToChange(() => result.current)
-
-    expect(result.current).toEqual({ status: 'fulfilled', value: 1 })
+    await waitFor(() => {
+      expect(result.current).toEqual({ status: 'fulfilled', value: 1 })
+    })
   })
 
   it('aborts when unmounted before the promise was settled', () => {
