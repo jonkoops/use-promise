@@ -38,7 +38,7 @@
     "react": "^17 || ^18"
   },
   "devDependencies": {
-    "@jest/types": "^27.0.2",
+    "@jest/types": "^28.0.2",
     "@testing-library/react": "^13.1.1",
     "@types/jest": "^27.0.1",
     "@types/react": "^18.0.5",
