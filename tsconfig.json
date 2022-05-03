@@ -3,7 +3,7 @@
     "rootDir": "./src",
     "outDir": "./lib",
     "target": "ES2020",
-    "lib": ["ES2020", "DOM"],
+    "lib": ["ES2020"],
     "module": "ES2020",
     "moduleResolution": "Node",
     "declaration": true,
@@ -16,10 +16,5 @@
   ],
   "exclude": [
     "**/*.test.*",
-  ],
-  "ts-node": {
-    "moduleTypes": {
-      "jest.config.ts": "cjs"
-    }
-  }
+  ]
 }
