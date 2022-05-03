@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { act, renderHook, waitFor } from '@testing-library/react'
+import { describe, it, expect } from '@jest/globals'
 import usePromise, { isFulfilled, isPending, isRejected } from './usePromise'
 
 // This promise never resolves or rejects, making it useful for testing the pending state.
