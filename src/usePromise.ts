@@ -1,40 +1,40 @@
-import type { DependencyList } from 'react'
-import { useEffect, useState } from 'react'
+import type { DependencyList } from "react";
+import { useEffect, useState } from "react";
 
-export type PromiseResult<T> = PromisePendingResult | PromiseSettledResult<T>
+export type PromiseResult<T> = PromisePendingResult | PromiseSettledResult<T>;
 
 export interface PromisePendingResult {
-  status: 'pending'
+  status: "pending";
 }
 
 /**
  * Function that creates a promise, takes a signal to abort fetch requests.
  */
-export type PromiseFactoryFn<T> = (signal: AbortSignal) => Promise<T>
+export type PromiseFactoryFn<T> = (signal: AbortSignal) => Promise<T>;
 
 /**
  * Determines if the result of a promise is pending.
  * @param result Result to check.
  */
 export const isPending = <T>(
-  result: PromiseResult<T>,
-): result is PromisePendingResult => result.status === 'pending'
+  result: PromiseResult<T>
+): result is PromisePendingResult => result.status === "pending";
 
 /**
  * Determines if the result of a promise is fulfilled.
  * @param result Result to check.
  */
 export const isFulfilled = <T>(
-  result: PromiseResult<T>,
-): result is PromiseFulfilledResult<T> => result.status === 'fulfilled'
+  result: PromiseResult<T>
+): result is PromiseFulfilledResult<T> => result.status === "fulfilled";
 
 /**
  * Determines if the result of a promise is rejected.
  * @param result Result to check.
  */
 export const isRejected = <T>(
-  result: PromiseResult<T>,
-): result is PromiseRejectedResult => result.status === 'rejected'
+  result: PromiseResult<T>
+): result is PromiseRejectedResult => result.status === "rejected";
 
 /**
  * Takes a function that creates a Promise and returns its pending, fulfilled, or rejected result.
@@ -60,31 +60,31 @@ export const isRejected = <T>(
  */
 export default function usePromise<T>(
   factory: PromiseFactoryFn<T>,
-  deps: DependencyList = [],
+  deps: DependencyList = []
 ): PromiseResult<T> {
-  const [result, setResult] = useState<PromiseResult<T>>({ status: 'pending' })
+  const [result, setResult] = useState<PromiseResult<T>>({ status: "pending" });
 
   useEffect(() => {
     if (!isPending(result)) {
-      setResult({ status: 'pending' })
+      setResult({ status: "pending" });
     }
 
-    const controller = new AbortController()
-    const { signal } = controller
+    const controller = new AbortController();
+    const { signal } = controller;
 
     async function handlePromise() {
-      const [promiseResult] = await Promise.allSettled([factory(signal)])
+      const [promiseResult] = await Promise.allSettled([factory(signal)]);
 
       if (!signal.aborted) {
-        setResult(promiseResult)
+        setResult(promiseResult);
       }
     }
 
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    handlePromise()
+    handlePromise();
 
-    return () => controller.abort()
-  }, deps)
+    return () => controller.abort();
+  }, deps);
 
-  return result
+  return result;
 }

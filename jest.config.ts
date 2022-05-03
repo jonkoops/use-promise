@@ -1,8 +1,8 @@
-import type { InitialOptionsTsJest } from 'ts-jest'
+import type { InitialOptionsTsJest } from "ts-jest";
 
 const config: InitialOptionsTsJest = {
-  testEnvironment: 'jsdom',
-  preset: 'ts-jest',
+  testEnvironment: "jsdom",
+  preset: "ts-jest",
   coverageThreshold: {
     global: {
       branches: 100,
@@ -11,6 +11,6 @@ const config: InitialOptionsTsJest = {
       statements: 100,
     },
   },
-}
+};
 
-export default config
+export default config;
