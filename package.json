@@ -1,6 +1,6 @@
 {
   "name": "@jonkoops/use-promise",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "Making Promises in your components a breeze 🌬️",
   "type": "module",
   "sideEffects": false,
