@@ -3,7 +3,7 @@
 Let's take the example below, a component that fetches and shows user information.
 
 ```tsx
-import usePromise, { isPending, isRejected } from '@amsterdam/use-promise'
+import usePromise, { isPending, isRejected } from '@jonkoops/use-promise'
 
 interface User {
   id: string

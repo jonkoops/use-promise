@@ -1,5 +1,5 @@
 {
-  "name": "@amsterdam/use-promise",
+  "name": "@jonkoops/use-promise",
   "version": "3.1.0",
   "description": "Making Promises in your components a breeze 🌬️",
   "type": "module",
@@ -21,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Amsterdam/use-promise.git"
+    "url": "git+https://github.com/jonkoops/use-promise.git"
   },
   "keywords": [
     "react",
@@ -31,9 +31,9 @@
   "author": "Jon Koops <jonkoops@gmail.com>",
   "license": "MPL-2.0",
   "bugs": {
-    "url": "https://github.com/Amsterdam/use-promise/issues"
+    "url": "https://github.com/jonkoops/use-promise/issues"
   },
-  "homepage": "https://github.com/Amsterdam/use-promise#readme",
+  "homepage": "https://github.com/jonkoops/use-promise#readme",
   "peerDependencies": {
     "react": "^17 || ^18"
   },

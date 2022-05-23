@@ -1,4 +1,4 @@
-# usePromise &middot; [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://github.com/Amsterdam/use-promise/blob/main/LICENSE.md) [![npm version](https://img.shields.io/npm/v/@amsterdam/use-promise.svg?style=flat)](https://www.npmjs.com/package/@amsterdam/use-promise)
+# usePromise &middot; [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://github.com/jonkoops/use-promise/blob/main/LICENSE.md) [![npm version](https://img.shields.io/npm/v/@jonkoops/use-promise.svg?style=flat)](https://www.npmjs.com/package/@jonkoops/use-promise)
 
 Making Promises in your components a breeze 🌬️
 
@@ -12,16 +12,16 @@ For more information see the [Getting Started](./guides/getting-started.md) guid
 
 ## Installation
 
-Install usePromise using [`yarn`](https://yarnpkg.com/en/package/@amsterdam/use-promise):
+Install usePromise using [`yarn`](https://yarnpkg.com/en/package/@jonkoops/use-promise):
 
 ```bash
-yarn add @amsterdam/use-promise
+yarn add @jonkoops/use-promise
 ```
 
-Or [`npm`](https://www.npmjs.com/package/@amsterdam/use-promise):
+Or [`npm`](https://www.npmjs.com/package/@jonkoops/use-promise):
 
 ```bash
-npm install @amsterdam/use-promise
+npm install @jonkoops/use-promise
 ```
 
 ## Guides
