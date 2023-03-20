@@ -2,10 +2,12 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "composite": true,
-    "rootDir": "."
+    "rootDir": ".",
+    "verbatimModuleSyntax": false
   },
   "include": [
-    "**/*"
+    "./src",
+    "./jest.config.ts"
   ],
   // Reset exclusions in order to include files with .test extension.
   "exclude": ["lib"]
