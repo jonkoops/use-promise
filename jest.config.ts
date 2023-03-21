@@ -1,8 +1,16 @@
-import type { InitialOptionsTsJest } from "ts-jest";
+import type { JestConfigWithTsJest } from "ts-jest";
 
-const config: InitialOptionsTsJest = {
+const jestConfig: JestConfigWithTsJest = {
   testEnvironment: "jsdom",
   preset: "ts-jest",
+  transform: {
+    "^.+\\.[tj]sx?$": [
+      "ts-jest",
+      {
+        tsconfig: "tsconfig.test.json",
+      },
+    ],
+  },
   coverageThreshold: {
     global: {
       branches: 100,
@@ -13,4 +21,4 @@ const config: InitialOptionsTsJest = {
   },
 };
 
-export default config;
+export default jestConfig;

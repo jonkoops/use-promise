@@ -8,13 +8,16 @@
     "moduleResolution": "Node",
     "declaration": true,
     "strict": true,
-    "isolatedModules": true,
-    "importsNotUsedAsValues": "error",
+    "verbatimModuleSyntax": true
   },
   "include": [
     "./src"
   ],
   "exclude": [
     "**/*.test.*",
+  ],
+  "references": [
+    { "path": "./tsconfig.eslint.json" },
+    { "path": "./tsconfig.test.json" }
   ]
 }
