@@ -34,7 +34,7 @@ describe("usePromise", () => {
   it("returns a fulfilled result", async () => {
     const value = "foo";
     const { result } = renderHook(() =>
-      usePromise(() => Promise.resolve(value))
+      usePromise(() => Promise.resolve(value)),
     );
 
     await waitFor(() => {
@@ -45,7 +45,7 @@ describe("usePromise", () => {
   it("returns a rejected result", async () => {
     const reason = new Error("Whoopsie");
     const { result } = renderHook(() =>
-      usePromise(() => Promise.reject(reason))
+      usePromise(() => Promise.reject(reason)),
     );
 
     await waitFor(() => {
@@ -63,7 +63,7 @@ describe("usePromise", () => {
     }
 
     const { result, rerender } = renderHook(() =>
-      usePromise(() => nextNumber(), [retryCount])
+      usePromise(() => nextNumber(), [retryCount]),
     );
 
     await waitFor(() => {
@@ -84,7 +84,7 @@ describe("usePromise", () => {
       usePromise((signal) => {
         currentSignal = signal;
         return UNSETTLED_PROMISE;
-      }, [])
+      }, []),
     );
 
     unmount();
@@ -105,8 +105,8 @@ describe("usePromise", () => {
 
           return UNSETTLED_PROMISE;
         },
-        [isCancelled]
-      )
+        [isCancelled],
+      ),
     );
 
     isCancelled = true;

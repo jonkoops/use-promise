@@ -17,7 +17,7 @@ export type PromiseFactoryFn<T> = (signal: AbortSignal) => Promise<T>;
  * @param result Result to check.
  */
 export const isPending = <T>(
-  result: PromiseResult<T>
+  result: PromiseResult<T>,
 ): result is PromisePendingResult => result.status === "pending";
 
 /**
@@ -25,7 +25,7 @@ export const isPending = <T>(
  * @param result Result to check.
  */
 export const isFulfilled = <T>(
-  result: PromiseResult<T>
+  result: PromiseResult<T>,
 ): result is PromiseFulfilledResult<T> => result.status === "fulfilled";
 
 /**
@@ -33,7 +33,7 @@ export const isFulfilled = <T>(
  * @param result Result to check.
  */
 export const isRejected = <T>(
-  result: PromiseResult<T>
+  result: PromiseResult<T>,
 ): result is PromiseRejectedResult => result.status === "rejected";
 
 /**
@@ -60,7 +60,7 @@ export const isRejected = <T>(
  */
 export default function usePromise<T>(
   factory: PromiseFactoryFn<T>,
-  deps: DependencyList = []
+  deps: DependencyList = [],
 ): PromiseResult<T> {
   const [result, setResult] = useState<PromiseResult<T>>({ status: "pending" });
 
